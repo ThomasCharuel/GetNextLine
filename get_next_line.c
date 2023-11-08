@@ -6,7 +6,7 @@
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:48 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/08 18:54:20 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/08 19:12:01 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,6 @@
 char	*get_next_line(int fd)
 {
 	(void)fd;
+	//read(fd, &c, 1);
 	return (NULL);
 }
