@@ -6,7 +6,7 @@
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:51 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/12 16:36:20 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/12 19:30:23 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,4 +117,16 @@ int	ft_str_has_lf(char const *s)
 		i++;
 	}
 	return (0);
+}
+
+void	ft_strcpy(char *dst, const char *src)
+{
+	size_t	i;
+
+	i = 0;
+	while (src[i])
+	{
+		dst[i] = src[i];
+		i++;
+	}
 }
