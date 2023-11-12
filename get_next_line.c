@@ -6,7 +6,7 @@
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:48 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/12 17:01:43 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/12 17:37:18 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,9 @@ char	*get_next_line(int fd)
 		if (stash)
 			free(stash);
 		stash = NULL;
-		return (NULL);
 	}
+	if (!stash)
+		return (NULL);
 	line = pick_line_in_stash(&stash);
 	return (line);
 }

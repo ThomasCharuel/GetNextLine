@@ -8,7 +8,7 @@ int	main(void)
 	char	*s;
 
 	printf("Buffer size: %d\n", BUFFER_SIZE);
-	fd = open("test.txt", O_RDONLY);
+	fd = open("t.txt", O_RDONLY);
 	s = get_next_line(fd);
 	while (s)
 	{
