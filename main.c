@@ -7,11 +7,14 @@ int	main(void)
 	int		fd;
 	char	*s;
 
-	// char *s;
 	printf("Buffer size: %d\n", BUFFER_SIZE);
-	fd = open("empty.txt", O_RDONLY);
+	fd = open("test.txt", O_RDONLY);
 	s = get_next_line(fd);
-	printf("%s", s);
+	while (s)
+	{
+		printf("%s", s);
+		s = get_next_line(fd);
+	}
 	close(fd);
 	return (0);
 }

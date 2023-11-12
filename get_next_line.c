@@ -6,7 +6,7 @@
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:48 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/12 16:19:54 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/12 17:01:43 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ ssize_t	read_in_stash(int fd, char **stash)
 {
 	char	buffer[BUFFER_SIZE];
 	ssize_t	bytes_read;
+	char	*new_stash;
 
 	bytes_read = BUFFER_SIZE;
 	while (bytes_read == BUFFER_SIZE && (!*stash || (*stash
@@ -93,13 +94,57 @@ ssize_t	read_in_stash(int fd, char **stash)
 		if (bytes_read > 0)
 		{
 			if (!*stash)
-			{
-				*stash = (char *)malloc((bytes_read + 1) * sizeof(char));
-				if (!*stash)
-					return (-2);
-				(*stash)[bytes_read] = '\0';
-			}
+				new_stash = init_stash(buffer, bytes_read);
+			else
+				new_stash = concat_stash_and_buffer(*stash, buffer, bytes_read);
+			if (!*new_stash)
+				return (-2);
+			if (*stash)
+				free(*stash);
+			*stash = new_stash;
 		}
 	}
 	return (bytes_read);
+}
+
+char	*init_stash(char buffer[BUFFER_SIZE], ssize_t bytes_read)
+{
+	char	*new_stash;
+	ssize_t	i;
+
+	new_stash = (char *)malloc((bytes_read + 1) * sizeof(char));
+	if (!new_stash)
+		return (NULL);
+	i = 0;
+	while (i < bytes_read)
+	{
+		new_stash[i] = buffer[i];
+		i++;
+	}
+	new_stash[i] = '\0';
+	return (new_stash);
+}
+
+char	*concat_stash_and_buffer(char *stash, char buffer[BUFFER_SIZE],
+		ssize_t bytes_read)
+{
+	char	*new_stash;
+	size_t	len;
+	size_t	i;
+
+	len = ft_strlen_delimiter(stash, '\0') + bytes_read;
+	new_stash = (char *)malloc((len + 1) * sizeof(char));
+	if (!new_stash)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		if (i < len - bytes_read)
+			new_stash[i] = stash[i];
+		else
+			new_stash[i] = buffer[i - len + bytes_read];
+		i++;
+	}
+	new_stash[i] = '\0';
+	return (new_stash);
 }
