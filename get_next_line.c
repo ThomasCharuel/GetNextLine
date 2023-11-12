@@ -6,7 +6,7 @@
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:48 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/11 10:06:24 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/12 16:19:54 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,14 @@ char	*get_next_line(int fd)
 	char		*line;
 	ssize_t		bytes_read;
 
-	add_buffer_read_in_stash(fd, &stash);
-	if (!stash)
+	bytes_read = read_in_stash(fd, &stash);
+	if (bytes_read < 0)
+	{
+		if (stash)
+			free(stash);
+		stash = NULL;
 		return (NULL);
+	}
 	line = pick_line_in_stash(&stash);
 	return (line);
 }
@@ -52,24 +57,20 @@ char	*get_next_line(int fd)
  */
 char	*pick_line_in_stash(char **stash)
 {
-	size_t	line_len;
-	size_t	stash_len;
 	char	*line;
-	size_t	i;
+	char	*new_stash;
 
-	line_len = ft_strlen_with_delimiter(*stash, '\n');
-	if (line_len)
-		line = (char *)malloc((line_len + 1) * sizeof(char));
-	if (line_len && line)
-		stash_len = ft_strlcpy(line, *stash, line_len + 1);
-	if (!line_len || !line || line[i - 1] != '\n')
+	line = ft_strdup_lf(*stash);
+	if (!line || !ft_str_has_lf(line))
 	{
 		free(*stash);
 		*stash = NULL;
 	}
 	else
 	{
-		update_stash(stash, line_len + 1, stash_len);
+		new_stash = ft_substr(*stash, ft_strlen_delimiter(line, '\n'), -1);
+		free(*stash);
+		*stash = new_stash;
 		if (!*stash)
 		{
 			free(line);
@@ -79,42 +80,26 @@ char	*pick_line_in_stash(char **stash)
 	return (line);
 }
 
-/**
- * @brief Allocates and updates stash to a substring.
- *
- * The substring starts at the specified 'start' index
- * and has a maximum length of 'len' characters.
- *
- * @param stash The address of the stash.
- * @param start The start index of the substring in the string 'stash'.
- * @param len The maximum length of the substring.
- */
-void	update_stash(char **stash, size_t start, size_t end)
-{
-	char	*new_stash;
-
-	new_stash = ft_substr(*stash, start, end);
-	free(*stash);
-	*stash = new_stash;
-}
-
-void	add_buffer_read_in_stash(int fd, char **stash)
+ssize_t	read_in_stash(int fd, char **stash)
 {
 	char	buffer[BUFFER_SIZE];
 	ssize_t	bytes_read;
 
-	while (!new_line_found(*stash) && bytes_read == BUFFER_SIZE)
+	bytes_read = BUFFER_SIZE;
+	while (bytes_read == BUFFER_SIZE && (!*stash || (*stash
+				&& !ft_str_has_lf(*stash))))
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1)
+		if (bytes_read > 0)
 		{
-			if (*stash)
+			if (!*stash)
 			{
-				free(*stash);
-				*stash = NULL;
+				*stash = (char *)malloc((bytes_read + 1) * sizeof(char));
+				if (!*stash)
+					return (-2);
+				(*stash)[bytes_read] = '\0';
 			}
-			return ;
 		}
-		// Add to stash, penser a avoir un \0
 	}
+	return (bytes_read);
 }

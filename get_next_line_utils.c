@@ -6,7 +6,7 @@
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:51 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/11 09:58:37 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/12 15:44:18 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,35 +22,34 @@
  *
  * @return Length until first Line Feed (included)
  */
-ssize_t	ft_strlen_with_delimiter(char *s, char delimiter)
+size_t	ft_strlen_delimiter(const char *s, char c)
 {
-	ssize_t	len;
+	size_t	len;
 
 	len = 0;
 	while (s[len])
 	{
-		if (s[len++] == delimiter)
-			break ;
+		if (s[len++] == c)
+			return (len);
 	}
 	return (len);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+char	*ft_strdup_lf(const char *src)
 {
-	size_t	i;
+	size_t	len;
+	char	*dup;
 
-	if (size == 0)
-		return (ft_strlen(src));
-	i = 0;
-	while (i < size - 1 && src[i] != '\0')
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	dst[i] = '\0';
-	while (src[i] != '\0')
-		i++;
-	return (i);
+	len = ft_strlen_delimiter(src, '\n');
+	if (!len)
+		return (NULL);
+	dup = (char *)malloc((len + 1) * sizeof(char));
+	if (!dup)
+		return (NULL);
+	dup[len] = '\0';
+	while (len-- > 0)
+		dup[len] = src[len];
+	return (dup);
 }
 
 /**
@@ -73,12 +72,12 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	size_t	substr_len;
 	size_t	i;
 
-	if (!s || start > ft_strlen(s))
+	if (!s || start > ft_strlen_delimiter(s, 0))
 		substr_len = 0;
 	else
 	{
 		s += start;
-		substr_len = ft_strlen(s);
+		substr_len = ft_strlen_delimiter(s, 0);
 		if (len < substr_len)
 			substr_len = len;
 	}
@@ -93,4 +92,29 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	}
 	substr[i] = '\0';
 	return (substr);
+}
+
+/**
+ * @brief Checks if the input string contains a LINE FEED character.
+ *
+ * This function scans the input string 's' to check if it contains
+ * the character \n. It returns 1 if found within 's',
+ * and 0 otherwise.
+ *
+ * @param s The input string to be searched.
+ *
+ * @return 1 if \n (LINE FEED) is found in the string 's', otherwise 0.
+ */
+int	ft_str_has_lf(char const *s)
+{
+	size_t	i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '\n')
+			return (1);
+		i++;
+	}
+	return (0);
 }
