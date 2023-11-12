@@ -6,7 +6,7 @@
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:44 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/12 20:06:08 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/12 20:11:08 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 # include <unistd.h>
 
 char	*get_next_line(int fd);
-char	*pick_line_in_stash(char **stash);
 ssize_t	read_in_stash(int fd, char **stash);
+char	*pick_line_in_stash(char **stash);
 
 size_t	ft_strlen_delimiter(const char *s, char c);
 char	*ft_strdup_lf(const char *src);

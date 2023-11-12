@@ -6,7 +6,7 @@
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:48 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/12 20:01:47 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/12 20:22:44 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@
 char	*get_next_line(int fd)
 {
 	static char	*stash = NULL;
-	char		*line;
 	ssize_t		bytes_read;
 
 	if (BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
@@ -41,8 +40,36 @@ char	*get_next_line(int fd)
 	}
 	if (!stash)
 		return (NULL);
-	line = pick_line_in_stash(&stash);
-	return (line);
+	return (pick_line_in_stash(&stash));
+}
+
+ssize_t	read_in_stash(int fd, char **stash)
+{
+	ssize_t	bytes_read;
+	char	*new_stash;
+	size_t	stash_len;
+
+	bytes_read = BUFFER_SIZE;
+	while (bytes_read == BUFFER_SIZE && (!*stash || (*stash
+				&& !ft_str_has_lf(*stash))))
+	{
+		if (*stash)
+			stash_len = ft_strlen_delimiter(*stash, '\0');
+		else
+			stash_len = 0;
+		new_stash = (char *)malloc((stash_len + BUFFER_SIZE + 1)
+				* sizeof(char));
+		if (!new_stash)
+			return (-2);
+		if (stash_len)
+			ft_strcpy(new_stash, *stash);
+		bytes_read = read(fd, &(new_stash[stash_len]), BUFFER_SIZE);
+		new_stash[stash_len + bytes_read] = '\0';
+		if (*stash)
+			free(*stash);
+		*stash = new_stash;
+	}
+	return (bytes_read);
 }
 
 /**
@@ -81,33 +108,4 @@ char	*pick_line_in_stash(char **stash)
 		}
 	}
 	return (line);
-}
-
-ssize_t	read_in_stash(int fd, char **stash)
-{
-	ssize_t	bytes_read;
-	char	*new_stash;
-	size_t	stash_len;
-
-	bytes_read = BUFFER_SIZE;
-	while (bytes_read == BUFFER_SIZE && (!*stash || (*stash
-				&& !ft_str_has_lf(*stash))))
-	{
-		if (*stash)
-			stash_len = ft_strlen_delimiter(*stash, '\0');
-		else
-			stash_len = 0;
-		new_stash = (char *)malloc((stash_len + BUFFER_SIZE + 1)
-				* sizeof(char));
-		if (!new_stash)
-			return (-2);
-		if (stash_len)
-			ft_strcpy(new_stash, *stash);
-		bytes_read = read(fd, &(new_stash[stash_len]), BUFFER_SIZE);
-		new_stash[stash_len + bytes_read] = '\0';
-		if (*stash)
-			free(*stash);
-		*stash = new_stash;
-	}
-	return (bytes_read);
 }
