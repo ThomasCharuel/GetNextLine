@@ -6,7 +6,7 @@
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:44 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/12 19:30:45 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/12 20:06:08 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #  define BUFFER_SIZE 10
 # endif
 
-# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 
