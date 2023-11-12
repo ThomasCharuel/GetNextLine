@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:48 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/12 22:57:19 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/12 23:20:01 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 /**
  * @brief Returns a line read from a
@@ -26,20 +26,64 @@
  */
 char	*get_next_line(int fd)
 {
-	static char	*stash = NULL;
-	ssize_t		bytes_read;
+	static t_stash_list	*stash_list = NULL;
+	char				**stash;
+	ssize_t				bytes_read;
+	char				*line;
 
 	if (BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
 		return (NULL);
-	bytes_read = read_in_stash(fd, &stash);
+	stash = get_or_create_stash_from_list(&stash_list, fd);
+	if (!stash)
+		return (NULL);
+	bytes_read = read_in_stash(fd, stash);
 	if (bytes_read < 0)
 	{
-		if (stash)
-			free(stash);
-		stash = NULL;
+		remove_stash_from_list(&stash_list, fd);
 		return (NULL);
 	}
-	return (pick_line_in_stash(&stash));
+	line = pick_line_in_stash(stash);
+	if (!line)
+		remove_stash_from_list(&stash_list, fd);
+	return (line);
+}
+
+void	remove_stash_from_list(t_stash_list **stash_list, int fd)
+{
+	t_stash_list	*node;
+
+	if (!stash_list)
+		return ;
+	if ((*stash_list)->fd == fd)
+	{
+		node = *stash_list;
+		*stash_list = node->next;
+		free(node->stash);
+		free(node);
+		return ;
+	}
+	remove_stash_from_list(&(*stash_list)->next, fd);
+}
+
+char	**get_or_create_stash_from_list(t_stash_list **stash_list, int fd)
+{
+	t_stash_list	*node;
+
+	node = *stash_list;
+	while (node)
+	{
+		if (node->fd == fd)
+			return (&(node->stash));
+		node = node->next;
+	}
+	node = *stash_list;
+	*stash_list = (t_stash_list *)malloc(sizeof(t_stash_list));
+	if (!*stash_list)
+		return (NULL);
+	(*stash_list)->fd = fd;
+	(*stash_list)->stash = NULL;
+	(*stash_list)->next = node;
+	return (&((*stash_list)->stash));
 }
 
 ssize_t	read_in_stash(int fd, char **stash)
