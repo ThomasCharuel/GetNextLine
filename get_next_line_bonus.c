@@ -6,7 +6,7 @@
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:48 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/12 23:20:01 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/13 13:23:15 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,23 +48,18 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-void	remove_stash_from_list(t_stash_list **stash_list, int fd)
-{
-	t_stash_list	*node;
-
-	if (!stash_list)
-		return ;
-	if ((*stash_list)->fd == fd)
-	{
-		node = *stash_list;
-		*stash_list = node->next;
-		free(node->stash);
-		free(node);
-		return ;
-	}
-	remove_stash_from_list(&(*stash_list)->next, fd);
-}
-
+/**
+ * @brief Find the stash for fd in the linked list and returns it.
+ *
+ * If no stash if found for fd, we create a new node for it in the
+ * linked list.
+ *
+ * @param stash_list The address of the stash string.
+ * @param fd The file descriptor to read from.
+ * 
+ * @return The address of the stash for fd.
+ * @retval NULL if the allocation fails.
+ */
 char	**get_or_create_stash_from_list(t_stash_list **stash_list, int fd)
 {
 	t_stash_list	*node;
@@ -86,6 +81,44 @@ char	**get_or_create_stash_from_list(t_stash_list **stash_list, int fd)
 	return (&((*stash_list)->stash));
 }
 
+/**
+ * @brief Remove a node with value fd from a linked list.
+ *
+ * Recursively loop through the linked list.
+ * If we find the searched for value of fd we remove the node from the list.
+ *
+ * @param stash_list The address of the stash string.
+ * @param fd The file descriptor to read from.
+ */
+void	remove_stash_from_list(t_stash_list **stash_list, int fd)
+{
+	t_stash_list	*node;
+
+	if (!stash_list)
+		return ;
+	if ((*stash_list)->fd == fd)
+	{
+		node = *stash_list;
+		*stash_list = node->next;
+		free(node->stash);
+		free(node);
+		return ;
+	}
+	remove_stash_from_list(&(*stash_list)->next, fd);
+}
+
+/**
+ * @brief Updates the stash by reading on file.
+ *
+ * This function takes the stash and add content from the file in it
+ * until it finds a LINE FEED character or EOF.
+ *
+ * @param fd The file descriptor to read from.
+ * @param stash The address of the stash string.
+ *
+ * @return The number of bytes read in the last read call.
+ * @retval -2 if the allocation fails.
+ */
 ssize_t	read_in_stash(int fd, char **stash)
 {
 	ssize_t	bytes_read;

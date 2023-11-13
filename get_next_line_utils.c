@@ -6,7 +6,7 @@
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:51 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/12 19:30:23 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/13 13:01:40 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,19 @@ size_t	ft_strlen_delimiter(const char *s, char c)
 	return (len);
 }
 
+/**
+ * @brief Duplicates a string up to the first line feed ('\n') character.
+ * 
+ * This function creates a duplicate of the string 'src', copying characters
+ * up to (included) the first occurrence of the line feed character.
+ * The duplication process stops either at the first line feed character
+ * or at the end of the string if no line feed is found.
+ *
+ * @param src The source string to be duplicated.
+ *
+ * @return A pointer to the duplicated string, which is null-terminated.
+ * @retval NULL if the string length is 0 or the allocation fails.
+ */
 char	*ft_strdup_lf(const char *src)
 {
 	size_t	len;
@@ -119,6 +132,12 @@ int	ft_str_has_lf(char const *s)
 	return (0);
 }
 
+/**
+ * @brief Copies the string pointed to by src to the buffer pointed to by dst.
+ *
+ * @param dst Pointer to the destination array where the content is to be copied.
+ * @param src Pointer to the source string to be copied.
+ */
 void	ft_strcpy(char *dst, const char *src)
 {
 	size_t	i;
@@ -129,4 +148,5 @@ void	ft_strcpy(char *dst, const char *src)
 		dst[i] = src[i];
 		i++;
 	}
+	dst[i] = '\0';
 }

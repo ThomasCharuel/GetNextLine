@@ -6,7 +6,7 @@
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:48 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/12 22:57:19 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/13 13:08:57 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,18 @@ char	*get_next_line(int fd)
 	return (pick_line_in_stash(&stash));
 }
 
+/**
+ * @brief Updates the stash by reading on file.
+ *
+ * This function takes the stash and add content from the file in it
+ * until it finds a LINE FEED character or EOF.
+ *
+ * @param fd The file descriptor to read from.
+ * @param stash The address of the stash string.
+ *
+ * @return The number of bytes read in the last read call.sss
+ * @retval -2 if the allocation fails.
+ */
 ssize_t	read_in_stash(int fd, char **stash)
 {
 	ssize_t	bytes_read;
