@@ -6,12 +6,12 @@
 /*   By: tcharuel <tcharuel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:40:44 by tcharuel          #+#    #+#             */
-/*   Updated: 2023/11/12 23:31:05 by tcharuel         ###   ########.fr       */
+/*   Updated: 2023/11/13 11:14:57 by tcharuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 10
@@ -28,8 +28,8 @@ typedef struct s_stash_list
 }						t_stash_list;
 
 char					*get_next_line(int fd);
-char					**get_or_create_stash_from_list(t_stash_list **stash_list,
-							int fd);
+char					**get_or_create_stash_from_list(
+							t_stash_list **stash_list, int fd);
 ssize_t					read_in_stash(int fd, char **stash);
 char					*pick_line_in_stash(char **stash);
 void					remove_stash_from_list(t_stash_list **stash_list,
